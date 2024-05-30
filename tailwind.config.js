@@ -45,6 +45,7 @@ module.exports = {
             foreground: "#ffffff",
             primary,
             secondary: secondaryDark,
+            divider: "#363130",
           },
         },
       },
