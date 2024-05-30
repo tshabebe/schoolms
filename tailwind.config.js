@@ -41,11 +41,17 @@ module.exports = {
         },
         dark: {
           colors: {
-            background: "#000000",
-            foreground: "#ffffff",
+            background: "#0c0a09",
+            foreground: "#d2d2ca",
             primary,
             secondary: secondaryDark,
             divider: "#363130",
+            content1: "#110f0d",
+            default: {
+              ...primary,
+              background: "#0c0a09",
+              foreground: "#d2d2ca",
+            },
           },
         },
       },
