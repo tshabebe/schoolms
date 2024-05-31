@@ -1,18 +1,19 @@
 "use server";
 
-import { InsertClassSchema } from "@/app/_db/schema";
+import { InsertDepartmentSchema, InsertSectionSchema } from "@/app/_db/schema";
 import { z } from "zod";
-import { classes } from "@/app/_db/schema";
+import { section } from "@/app/_db/schema";
 import { db } from "@/app/_db";
 import { getErrorMessage } from "../../../utils/handle-error";
 
-export async function classAction(data: z.infer<typeof InsertClassSchema>) {
+const mergedSchema = InsertSectionSchema.merge(InsertDepartmentSchema);
+export async function classAction(data: z.infer<typeof mergedSchema>) {
   try {
-    const validatedData = InsertClassSchema.parse(data);
+    const validatedData = mergedSchema.parse(data);
     const updatedId = await db
-      .insert(classes)
-      .values(validatedData)
-      .returning({ id: classes.id });
+      .insert(section)
+      .values({ sectionName: validatedData.sectionName })
+      .returning({ id: section.id });
     return updatedId;
   } catch (err) {
     console.log(getErrorMessage(err));
