@@ -1,21 +1,25 @@
 "use server";
-
+import { unstable_noStore as noStore, revalidatePath } from "next/cache";
 import { InsertDepartmentSchema, InsertSectionSchema } from "@/app/_db/schema";
 import { z } from "zod";
-import { section } from "@/app/_db/schema";
+import { department } from "@/app/_db/schema";
 import { db } from "@/app/_db";
 import { getErrorMessage } from "../../../utils/handle-error";
+import { permanentRedirect, redirect } from "next/navigation";
 
-const mergedSchema = InsertSectionSchema.merge(InsertDepartmentSchema);
-export async function classAction(data: z.infer<typeof mergedSchema>) {
+export async function classAction(
+  data: z.infer<typeof InsertDepartmentSchema>,
+) {
+  noStore();
   try {
-    const validatedData = mergedSchema.parse(data);
-    const updatedId = await db
-      .insert(section)
-      .values({ sectionName: validatedData.sectionName })
-      .returning({ id: section.id });
-    return updatedId;
+    const validatedData = InsertDepartmentSchema.parse(data);
+    await db
+      .insert(department)
+      .values({ department: validatedData.department })
+      .returning({ id: department.id });
   } catch (err) {
-    console.log(getErrorMessage(err));
+    return console.log(getErrorMessage(err));
   }
+  revalidatePath("/dashboard");
+  permanentRedirect("/department");
 }

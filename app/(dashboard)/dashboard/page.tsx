@@ -8,21 +8,18 @@ import { z } from "zod";
 import { useTransition } from "react";
 import { classAction } from "./action";
 
-
-const mergedSchema = InsertSectionSchema.merge(InsertDepartmentSchema)
-type MergedType = z.infer<typeof mergedSchema>
+const mergedSchema = InsertSectionSchema.merge(InsertDepartmentSchema);
+type DepartmentType = z.infer<typeof InsertDepartmentSchema>;
 
 export default function Dashboard() {
   // TODO: create a calass if there is no class
   const [loading, setTransition] = useTransition();
 
-  const { register, handleSubmit, formState } = useForm<
-    MergedType
-  >({
-    resolver: zodResolver(mergedSchema),
+  const { register, handleSubmit, formState } = useForm<DepartmentType>({
+    resolver: zodResolver(InsertDepartmentSchema),
   });
 
-  function submit(data: z.infer<typeof InsertSectionSchema>) {
+  function submit(data: DepartmentType) {
     setTransition(async () => {
       await classAction(data);
     });
@@ -30,18 +27,12 @@ export default function Dashboard() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit(submit)}>
+      <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-4">
         <Input
           {...register("department")}
-          placeholder="inter your class name"
+          placeholder="department"
           errorMessage={formState.errors.department?.message}
           isInvalid={(formState.errors.department && true) || false}
-        />
-        <Input
-          {...register("sectionName")}
-          placeholder="inter your class name"
-          errorMessage={formState.errors.sectionName?.message}
-          isInvalid={(formState.errors.sectionName && true) || false}
         />
         <button type="submit">{loading ? "loading" : "submit"}</button>
       </form>
