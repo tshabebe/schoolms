@@ -9,8 +9,9 @@ interface Props {
 export const Layout = ({ children }: Props) => {
   return (
     <section className="flex">
-      <SidebarWrapper />
-      <NavbarWrapper>{children}</NavbarWrapper>
+      {/* <SidebarWrapper /> */}
+      {/* <NavbarWrapper>{children}</NavbarWrapper> */}
+      {children}
     </section>
   );
 };

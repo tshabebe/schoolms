@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { Layout } from "@/components/layout/layout";
 import { validateSession } from "../(auth)/validateSession";
 
 export default async function DashboardLayout({
@@ -9,5 +8,7 @@ export default async function DashboardLayout({
 }) {
   const user = validateSession();
   if (!user) return <div>please log in</div>;
-  return <Layout>{children}</Layout>;
+  return (
+    <div className="flex items-center justify-center h-screen">{children}</div>
+  );
 }
