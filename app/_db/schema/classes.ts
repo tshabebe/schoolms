@@ -9,7 +9,7 @@ export const section = pgTable("section", {
   department: serial("department_id")
     .notNull()
     .references(() => department.id),
-  sectionName: varchar("section_name", { length: 256 }).notNull().unique(),
+  sectionName: varchar("section_name", { length: 256 }).notNull(),
 });
 
 export const department = pgTable("department", {
