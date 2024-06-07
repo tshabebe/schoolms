@@ -1,8 +1,9 @@
 import { relations, sql } from "drizzle-orm";
-import { date, pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
+import { student } from "./students";
 
 export const section = pgTable("section", {
   id: serial("id").primaryKey(),
@@ -30,11 +31,12 @@ export const departmentRelation = relations(department, ({ many }) => ({
   section: many(section),
 }));
 
-export const sectionRelation = relations(section, ({ one }) => ({
+export const sectionRelation = relations(section, ({ one, many }) => ({
   department: one(department, {
     fields: [section.department],
     references: [department.id],
   }),
+  students: many(student),
 }));
 
 export const InsertDepartmentSchema = createInsertSchema(department, {
