@@ -16,6 +16,7 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { newSection } from "./action";
+import { useRouter } from "next/navigation";
 
 export function Departments({
   department,
@@ -26,16 +27,20 @@ export function Departments({
   id: number;
   section: z.infer<typeof SelectSectionSchema>[];
 }) {
+  const router = useRouter();
   return (
     <div>
       <Card>
         <CardHeader className="justify-between">
           {department}
           <AddSection id={id} />
-          <CardBody>
-            <div>{section.length}</div>
-          </CardBody>
         </CardHeader>
+        <CardBody>
+          <div>{section.length} sections</div>
+          <Button onClick={() => router.push(`department/${id}/section/`)}>
+            view
+          </Button>
+        </CardBody>
       </Card>
     </div>
   );

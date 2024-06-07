@@ -1,5 +1,5 @@
 {
-  "id": "2313c4be-cd2b-4931-9e29-509ede37d5e8",
+  "id": "dafc0f70-3544-4be4-b225-1d7a03b0e0c8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -95,6 +95,20 @@
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "current_timestamp"
         }
       },
       "indexes": {},
@@ -131,6 +145,20 @@
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "current_timestamp"
         }
       },
       "indexes": {},
@@ -150,15 +178,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "section_section_name_unique": {
-          "name": "section_section_name_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "section_name"
-          ]
-        }
-      }
+      "uniqueConstraints": {}
     }
   },
   "enums": {},

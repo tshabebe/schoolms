@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS "user" (
 CREATE TABLE IF NOT EXISTS "department" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"department" varchar(256) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT current_timestamp,
 	CONSTRAINT "department_department_unique" UNIQUE("department")
 );
 --> statement-breakpoint
@@ -21,7 +23,8 @@ CREATE TABLE IF NOT EXISTS "section" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"department_id" serial NOT NULL,
 	"section_name" varchar(256) NOT NULL,
-	CONSTRAINT "section_section_name_unique" UNIQUE("section_name")
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT current_timestamp
 );
 --> statement-breakpoint
 DO $$ BEGIN

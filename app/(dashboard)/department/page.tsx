@@ -11,7 +11,7 @@ export default async function Departemnt() {
       section: true,
     },
   });
-  console.log(departments);
+
   return (
     <div className="grid grid-cols-3 gap-4">
       {departments.map((department) => (
