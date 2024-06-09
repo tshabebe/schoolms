@@ -1,23 +1,32 @@
 import { db } from "@/app/_db";
 import { section } from "@/app/_db/schema";
 import { eq } from "drizzle-orm";
-import { setDate, formatDistanceToNow, format } from "date-fns";
+import { Card, CardFooter, CardHeader } from "@nextui-org/card";
+import { AddTeachers } from "./modal";
+import { AddStudents } from "./modal";
 export default async function Section({ params }: { params: { id: string } }) {
   const sections = await db.query.section.findMany({
     with: {
       department: true,
+      students: true,
+      teachers: true,
     },
     where: eq(section.department, +params.id),
   });
 
   // const result = setDate(new Date(2014, 8, 1), 30)
   return (
-    <div>
+    <div className="grid grid-cols-3 gap-4">
       {sections.map((section) => (
-        <div key={section.id}>
-          section {section.sectionName} enteryDate{" "}
-          {format(section.createdAt, "yyyy")} expries in 2025
-        </div>
+        <Card key={section.id}>
+          <CardHeader className="justify-between">
+            <div>sectionName: {section.sectionName}</div>
+          </CardHeader>
+          <CardFooter className="gap-2">
+            <AddTeachers id={section.id} />
+            <AddStudents id={section.id} />
+          </CardFooter>
+        </Card>
       ))}
     </div>
   );

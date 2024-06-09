@@ -4,9 +4,9 @@ import { section } from "./classes";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const student = pgTable("student", {
-  id: serial("student_id").primaryKey(),
-  studentName: varchar("student_name", { length: 256 }).notNull(),
+export const teacher = pgTable("teacher", {
+  id: serial("teacher_id").primaryKey(),
+  teacherName: varchar("teacher_name", { length: 256 }).notNull(),
   sectionId: serial("section_id")
     .notNull()
     .references(() => section.id)
@@ -17,13 +17,11 @@ export const student = pgTable("student", {
     .$onUpdate(() => new Date()),
 });
 
-export const studentRelations = relations(student, ({ one }) => ({
+export const teachersRelations = relations(teacher, ({ one }) => ({
   sectionId: one(section, {
-    fields: [student.sectionId],
+    fields: [teacher.sectionId],
     references: [section.id],
   }),
 }));
 
-export const InsertStudentSchema = createInsertSchema(student, {
-  studentName: z.string().max(256).min(2),
-});
+export const InsertTeachersSchema = createInsertSchema(teacher, {});

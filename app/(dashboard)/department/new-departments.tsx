@@ -22,6 +22,7 @@ export default function App() {
     setTransition(async () => {
       const data = await classAction(datap);
       setData(data);
+      console.log('test')
     });
   }
 

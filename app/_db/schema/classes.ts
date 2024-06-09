@@ -1,9 +1,10 @@
 import { relations, sql } from "drizzle-orm";
 import { pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { student } from "./students";
+import { teacher } from "./teachers";
 
 export const section = pgTable("section", {
   id: serial("id").primaryKey(),
@@ -20,7 +21,7 @@ export const section = pgTable("section", {
 export const department = pgTable("department", {
   id: serial("id").primaryKey(),
   department: varchar("department", { length: 256 }).notNull().unique(),
-  departmentDuration: timestamp("created_at").defaultNow().notNull(),
+  departmentDuration: timestamp("department_duration").defaultNow().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .default(sql`current_timestamp`)
@@ -37,6 +38,7 @@ export const sectionRelation = relations(section, ({ one, many }) => ({
     references: [department.id],
   }),
   students: many(student),
+  teachers: many(teacher),
 }));
 
 export const InsertDepartmentSchema = createInsertSchema(department, {
@@ -49,4 +51,4 @@ export const InsertSectionSchema = createInsertSchema(section, {
   ),
 }).omit({ id: true });
 
-export const SelectSectionSchema = createInsertSchema(section);
+export const SelectSectionSchema = createSelectSchema(section);
