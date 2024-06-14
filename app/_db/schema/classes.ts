@@ -1,5 +1,11 @@
 import { relations, sql } from "drizzle-orm";
-import { pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import {
+  integer,
+  pgTable,
+  serial,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
@@ -11,6 +17,7 @@ export const section = pgTable("section", {
   department: serial("department_id")
     .notNull()
     .references(() => department.id),
+  sectionDuration: timestamp("section_duration").notNull(),
   sectionName: varchar("section_name", { length: 256 }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
@@ -21,7 +28,7 @@ export const section = pgTable("section", {
 export const department = pgTable("department", {
   id: serial("id").primaryKey(),
   department: varchar("department", { length: 256 }).notNull().unique(),
-  departmentDuration: timestamp("department_duration").defaultNow().notNull(),
+  departmentDuration: integer("department_duration").default(3).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .default(sql`current_timestamp`)
@@ -43,12 +50,13 @@ export const sectionRelation = relations(section, ({ one, many }) => ({
 
 export const InsertDepartmentSchema = createInsertSchema(department, {
   department: zfd.text(z.string().max(20, "too long try to shorten it")),
+  departmentDuration: zfd.numeric(),
 }).omit({ id: true });
 
 export const InsertSectionSchema = createInsertSchema(section, {
   sectionName: zfd.text(
     z.string().max(2, "className should not be more than 2 characters"),
   ),
-}).omit({ id: true });
+}).omit({ sectionDuration: true, id: true });
 
 export const SelectSectionSchema = createSelectSchema(section);

@@ -9,7 +9,8 @@ import { z } from "zod";
 import { department } from "@/app/_db/schema";
 import { db } from "@/app/_db";
 import { getErrorMessage } from "../../../utils/handle-error";
-import { permanentRedirect, redirect } from "next/navigation";
+import { eq } from "drizzle-orm";
+import { add } from "date-fns";
 
 export async function classAction(
   data: z.infer<typeof InsertDepartmentSchema>,
@@ -19,7 +20,10 @@ export async function classAction(
     const validatedData = InsertDepartmentSchema.parse(data);
     const test = await db
       .insert(department)
-      .values({ department: validatedData.department })
+      .values({
+        department: validatedData.department,
+        departmentDuration: validatedData.departmentDuration,
+      })
       .returning({ id: department.id });
     // return test[0].id;
   } catch (err) {
@@ -37,10 +41,20 @@ export async function newSection(sectionName: string, departmentId: number) {
       sectionName,
       departmentId,
     });
+
+    const departmentWithId = await db.query.department.findFirst({
+      where: eq(department.id, departmentId),
+    });
+
+    const durationDate = add(new Date(), {
+      months: departmentWithId?.departmentDuration,
+    });
+
     return await db
       .insert(section)
       .values({
         sectionName: validatedData.sectionName,
+        sectionDuration: durationDate,
         department: departmentId,
       })
       .returning({ id: section.sectionName });

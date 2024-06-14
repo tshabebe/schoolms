@@ -22,7 +22,7 @@ export default function App() {
     setTransition(async () => {
       const data = await classAction(datap);
       setData(data);
-      console.log('test')
+      console.log("test");
     });
   }
 
@@ -35,6 +35,13 @@ export default function App() {
           errorMessage={formState.errors.department?.message}
           isInvalid={(formState.errors.department && true) || false}
         />
+        <Input
+          {...register("departmentDuration")}
+          placeholder="department"
+          errorMessage={formState.errors.departmentDuration?.message}
+          isInvalid={(formState.errors.departmentDuration && true) || false}
+        />
+        {/* <Date /> */}
         <button onClick={handleSubmit(submit)} type="submit">
           {isPending ? "loading" : "submit"}
         </button>
@@ -42,3 +49,41 @@ export default function App() {
     </div>
   );
 }
+
+// import { DateRangePicker } from "@nextui-org/date-picker";
+// import { parseDate, getLocalTimeZone } from "@internationalized/date";
+// import { useDateFormatter } from "@react-aria/i18n";
+//
+// function Date() {
+//   const [value, setValue] = useState({
+//     start: parseDate("2024-04-01"),
+//     end: parseDate("2024-04-08"),
+//   });
+//
+//   let formatter = useDateFormatter({ dateStyle: "short" });
+//   const [loading, setTransition] = useTransition()
+//   return (
+//     <div className="flex flex-row gap-2">
+//       <div className="w-full flex flex-col gap-y-2">
+//         <DateRangePicker
+//           label="Date range (controlled)"
+//           value={value}
+//           onChange={(e) => {
+//             setTransition(async () => {
+//               await setDuration()
+//               setValue(e)
+//             })
+//           }}
+//         />
+//         <p className="text-default-500 text-sm">
+//           {value
+//             ? formatter.formatRange(
+//                 value.start.toDate(getLocalTimeZone()),
+//                 value.end.toDate(getLocalTimeZone()),
+//               )
+//             : "--"}
+//         </p>
+//       </div>
+//     </div>
+//   );
+// }

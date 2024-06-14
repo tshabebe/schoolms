@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { Card, CardFooter, CardHeader } from "@nextui-org/card";
 import { AddTeachers } from "./modal";
 import { AddStudents } from "./modal";
+import { formatDistanceStrict } from "date-fns";
 export default async function Section({ params }: { params: { id: string } }) {
   const sections = await db.query.section.findMany({
     with: {
@@ -21,6 +22,10 @@ export default async function Section({ params }: { params: { id: string } }) {
         <Card key={section.id}>
           <CardHeader className="justify-between">
             <div>sectionName: {section.sectionName}</div>
+            <div>
+              sectionDuration:{" "}
+              {formatDistanceStrict(new Date(), section.sectionDuration)}
+            </div>
           </CardHeader>
           <CardFooter className="gap-2">
             <AddTeachers id={section.id} />

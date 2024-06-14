@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { validateSession } from "../(auth)/validateSession";
+import Provider from "../lib/trpc/react";
 
 export default async function DashboardLayout({
   children,
@@ -9,6 +10,10 @@ export default async function DashboardLayout({
   const user = validateSession();
   if (!user) return <div>please log in</div>;
   return (
-    <div className="flex items-center justify-center h-screen">{children}</div>
+    <Provider>
+      <div className="flex items-center justify-center h-screen">
+        {children}
+      </div>
+    </Provider>
   );
 }

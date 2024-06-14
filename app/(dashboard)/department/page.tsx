@@ -11,13 +11,15 @@ export default async function Departemnt() {
       section: true,
     },
   });
-
+  // console.log(departments);
+  // console.log();
   return (
     <div className="grid grid-cols-3 gap-4">
       {departments.map((department) => (
         <Departments
           key={department.id}
           id={department.id}
+          duration={department.departmentDuration}
           department={department.department}
           section={department.section}
         ></Departments>
