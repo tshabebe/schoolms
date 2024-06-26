@@ -1,5 +1,5 @@
 {
-  "id": "e50c0fa3-e6e7-4533-9c20-d0e5333ca8c5",
+  "id": "b7051db4-2d9c-4c94-94ed-ffdf5a83ffef",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -86,7 +86,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "varchar(30)",
           "primaryKey": true,
           "notNull": true
         },
@@ -95,6 +95,13 @@
           "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true
+        },
+        "department_duration": {
+          "name": "department_duration",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 3
         },
         "created_at": {
           "name": "created_at",
@@ -130,13 +137,19 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "varchar(30)",
           "primaryKey": true,
           "notNull": true
         },
         "department_id": {
           "name": "department_id",
-          "type": "serial",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "section_duration": {
+          "name": "section_duration",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true
         },
@@ -184,9 +197,9 @@
       "name": "student",
       "schema": "",
       "columns": {
-        "student_id": {
-          "name": "student_id",
-          "type": "serial",
+        "id": {
+          "name": "id",
+          "type": "varchar(30)",
           "primaryKey": true,
           "notNull": true
         },
@@ -198,7 +211,7 @@
         },
         "section_id": {
           "name": "section_id",
-          "type": "serial",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
@@ -240,9 +253,9 @@
       "name": "teacher",
       "schema": "",
       "columns": {
-        "teacher_id": {
-          "name": "teacher_id",
-          "type": "serial",
+        "id": {
+          "name": "id",
+          "type": "varchar(30)",
           "primaryKey": true,
           "notNull": true
         },
@@ -252,9 +265,15 @@
           "primaryKey": false,
           "notNull": true
         },
+        "subjects_id": {
+          "name": "subjects_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
         "section_id": {
           "name": "section_id",
-          "type": "serial",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
@@ -275,9 +294,95 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "teacher_subjects_id_subjects_id_fk": {
+          "name": "teacher_subjects_id_subjects_id_fk",
+          "tableFrom": "teacher",
+          "tableTo": "subjects",
+          "columnsFrom": [
+            "subjects_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "teacher_section_id_section_id_fk": {
           "name": "teacher_section_id_section_id_fk",
           "tableFrom": "teacher",
+          "tableTo": "section",
+          "columnsFrom": [
+            "section_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "unique_teachers_name": {
+          "name": "unique_teachers_name",
+          "nullsNotDistinct": false,
+          "columns": [
+            "teacher_name",
+            "section_id"
+          ]
+        },
+        "unique_teachers_name_with_subject": {
+          "name": "unique_teachers_name_with_subject",
+          "nullsNotDistinct": false,
+          "columns": [
+            "section_id",
+            "subjects_id"
+          ]
+        }
+      }
+    },
+    "public.subjects": {
+      "name": "subjects",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(30)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "subjects_name": {
+          "name": "subjects_name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "section_id": {
+          "name": "section_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "current_timestamp"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "subjects_section_id_section_id_fk": {
+          "name": "subjects_section_id_section_id_fk",
+          "tableFrom": "subjects",
           "tableTo": "section",
           "columnsFrom": [
             "section_id"

@@ -55,7 +55,7 @@ export async function newSection(sectionName: string, departmentId: number) {
       .values({
         sectionName: validatedData.sectionName,
         sectionDuration: durationDate,
-        department: departmentId,
+        departmentId: departmentId,
       })
       .returning({ id: section.sectionName });
   } catch (error) {

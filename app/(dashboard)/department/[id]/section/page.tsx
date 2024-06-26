@@ -2,7 +2,7 @@ import { db } from "@/app/_db";
 import { section } from "@/app/_db/schema";
 import { eq } from "drizzle-orm";
 import { Card, CardFooter, CardHeader } from "@nextui-org/card";
-import { AddTeachers } from "./modal";
+import { AddSubjects, AddTeachers } from "./modal";
 import { AddStudents } from "./modal";
 import { formatDistanceStrict } from "date-fns";
 export default async function Section({ params }: { params: { id: string } }) {
@@ -12,7 +12,7 @@ export default async function Section({ params }: { params: { id: string } }) {
       students: true,
       teachers: true,
     },
-    where: eq(section.department, +params.id),
+    where: eq(section.departmentId, params.id),
   });
 
   // const result = setDate(new Date(2014, 8, 1), 30)
@@ -30,6 +30,7 @@ export default async function Section({ params }: { params: { id: string } }) {
           <CardFooter className="gap-2">
             <AddTeachers id={section.id} />
             <AddStudents id={section.id} />
+            <AddSubjects id={section.id} />
           </CardFooter>
         </Card>
       ))}

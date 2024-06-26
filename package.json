@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "next dev && docker-compose up -d",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix",
@@ -73,11 +73,13 @@
     "react-apexcharts": "^1.4.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.51.5",
+    "superjson": "^2.2.1",
     "tailwind-variants": "^0.1.20",
     "tailwindcss": "3.4.3",
     "typescript": "^5",
     "zod": "^3.23.8",
-    "zod-form-data": "^2.0.2"
+    "zod-form-data": "^2.0.2",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "drizzle-kit": "^0.21.4"

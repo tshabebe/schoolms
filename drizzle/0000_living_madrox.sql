@@ -12,33 +12,46 @@ CREATE TABLE IF NOT EXISTS "user" (
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "department" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" varchar(30) PRIMARY KEY NOT NULL,
 	"department" varchar(256) NOT NULL,
+	"department_duration" integer DEFAULT 3 NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT current_timestamp,
 	CONSTRAINT "department_department_unique" UNIQUE("department")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "section" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"department_id" serial NOT NULL,
+	"id" varchar(30) PRIMARY KEY NOT NULL,
+	"department_id" varchar(30) NOT NULL,
+	"section_duration" timestamp NOT NULL,
 	"section_name" varchar(256) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT current_timestamp
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "student" (
-	"student_id" serial PRIMARY KEY NOT NULL,
+	"id" varchar(30) PRIMARY KEY NOT NULL,
 	"student_name" varchar(256) NOT NULL,
-	"section_id" serial NOT NULL,
+	"section_id" varchar NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT current_timestamp
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "teacher" (
-	"teacher_id" serial PRIMARY KEY NOT NULL,
+	"id" varchar(30) PRIMARY KEY NOT NULL,
 	"teacher_name" varchar(256) NOT NULL,
-	"section_id" serial NOT NULL,
+	"subjects_id" varchar NOT NULL,
+	"section_id" varchar NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT current_timestamp,
+	CONSTRAINT "unique_teachers_name" UNIQUE("teacher_name","section_id"),
+	CONSTRAINT "unique_teachers_name_with_subject" UNIQUE("section_id","subjects_id")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "subjects" (
+	"id" varchar(30) PRIMARY KEY NOT NULL,
+	"subjects_name" varchar(256) NOT NULL,
+	"section_id" varchar NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT current_timestamp
 );
@@ -62,7 +75,19 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
+ ALTER TABLE "teacher" ADD CONSTRAINT "teacher_subjects_id_subjects_id_fk" FOREIGN KEY ("subjects_id") REFERENCES "public"."subjects"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
  ALTER TABLE "teacher" ADD CONSTRAINT "teacher_section_id_section_id_fk" FOREIGN KEY ("section_id") REFERENCES "public"."section"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "subjects" ADD CONSTRAINT "subjects_section_id_section_id_fk" FOREIGN KEY ("section_id") REFERENCES "public"."section"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

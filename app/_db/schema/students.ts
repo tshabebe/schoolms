@@ -3,11 +3,14 @@ import { pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
 import { section } from "./classes";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { generateId } from "@/app/lib/id";
 
 export const student = pgTable("student", {
-  id: serial("student_id").primaryKey(),
+  id: varchar("id", { length: 30 })
+    .$defaultFn(() => generateId())
+    .primaryKey(), // prefix_ + nanoid (12)
   studentName: varchar("student_name", { length: 256 }).notNull(),
-  sectionId: serial("section_id")
+  sectionId: varchar("section_id")
     .notNull()
     .references(() => section.id)
     .notNull(),

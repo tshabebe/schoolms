@@ -1,8 +1,13 @@
 import { z } from "zod";
-import { procedure, router } from "./trpc";
+import { authedProcedure, publicProcedure, router } from "./trpc";
+import { classRouter } from "./router/class-router";
+import { departmentRouter } from "./router/departemnt-router";
+import { sectionRouter } from "./router/section-router";
+import { teacherRouter } from "./router/teacher-router";
+import { subjectRouter } from "./router/subject-router";
 
 export const appRouter = router({
-  hello: procedure
+  hello: authedProcedure
     .input(
       z.object({
         text: z.string(),
@@ -11,12 +16,12 @@ export const appRouter = router({
     .query(async ({ ctx, input }) => {
       const { db } = ctx;
       const test = await db.query.department.findFirst();
-      console.log(test);
+      // console.log(test);
       return {
         greeting: `hello ${test?.department}`,
       };
     }),
-  setDone: procedure
+  setDone: authedProcedure
     .input(
       z.object({
         id: z.number(),
@@ -29,17 +34,12 @@ export const appRouter = router({
       console.log("hello world");
       return "test";
     }),
+  classRouter: classRouter,
+  departmentRouter: departmentRouter,
+  sectionRouter: sectionRouter,
+  teacherRouter: teacherRouter,
+  subjectRouter: subjectRouter,
 });
 
-// const test = router({
-//   test: procedure.input((z.object({
-//     text: z.string()
-//   }))).query(opts => {
-//     return {
-//       greeting: 'options'
-//     }
-//   })
-// })
-//
 // export type definition of API
 export type AppRouter = typeof appRouter;

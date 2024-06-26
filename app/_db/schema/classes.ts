@@ -11,10 +11,14 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { student } from "./students";
 import { teacher } from "./teachers";
+import { generateId } from "@/app/lib/id";
+import { subjects } from "./subjects";
 
 export const section = pgTable("section", {
-  id: serial("id").primaryKey(),
-  department: serial("department_id")
+  id: varchar("id", { length: 30 })
+    .$defaultFn(() => generateId())
+    .primaryKey(), // prefix_ + nanoid (12)
+  departmentId: varchar("department_id", { length: 30 })
     .notNull()
     .references(() => department.id),
   sectionDuration: timestamp("section_duration").notNull(),
@@ -26,7 +30,9 @@ export const section = pgTable("section", {
 });
 
 export const department = pgTable("department", {
-  id: serial("id").primaryKey(),
+  id: varchar("id", { length: 30 })
+    .$defaultFn(() => generateId())
+    .primaryKey(), // prefix_ + nanoid (12)
   department: varchar("department", { length: 256 }).notNull().unique(),
   departmentDuration: integer("department_duration").default(3).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -41,11 +47,12 @@ export const departmentRelation = relations(department, ({ many }) => ({
 
 export const sectionRelation = relations(section, ({ one, many }) => ({
   department: one(department, {
-    fields: [section.department],
+    fields: [section.departmentId],
     references: [department.id],
   }),
   students: many(student),
   teachers: many(teacher),
+  subjects: many(subjects),
 }));
 
 export const InsertDepartmentSchema = createInsertSchema(department, {

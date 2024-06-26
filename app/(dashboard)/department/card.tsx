@@ -12,11 +12,12 @@ import {
   ModalHeader,
   useDisclosure,
 } from "@nextui-org/modal";
-import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { newSection } from "./action";
 import { useRouter } from "next/navigation";
+import { api } from "@/app/lib/trpc/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { getQueryKey } from "@trpc/react-query";
 
 export function Departments({
   department,
@@ -24,7 +25,7 @@ export function Departments({
   section,
 }: {
   department: string;
-  id: number;
+  id: string;
   section: z.infer<typeof SelectSectionSchema>[];
 }) {
   const router = useRouter();
@@ -46,7 +47,7 @@ export function Departments({
   );
 }
 
-function AddSection({ id }: { id: number }) {
+function AddSection({ id }: { id: string }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -77,20 +78,25 @@ function AddSection({ id }: { id: number }) {
     </>
   );
 }
-const newSectionSchema = InsertSectionSchema.omit({ department: true });
-function ValidateInput({ id }: { id: number }) {
+const newSectionSchema = InsertSectionSchema.omit({ departmentId: true });
+function ValidateInput({ id }: { id: string }) {
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof newSectionSchema>
   >({
     resolver: zodResolver(newSectionSchema),
   });
 
-  const [isPending, setTransition] = useTransition();
+  const queryClient = useQueryClient();
+  const departmentsKey = getQueryKey(api.departmentRouter.newDepartment);
 
-  function submit(datap: z.infer<typeof newSectionSchema>) {
-    setTransition(async () => {
-      await newSection(datap.sectionName, id);
-    });
+  const newSection = api.sectionRouter.newSection.useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: departmentsKey });
+    },
+  });
+
+  function submit(data: z.infer<typeof newSectionSchema>) {
+    newSection.mutate({ ...data, departmentId: id });
   }
 
   return (
@@ -104,7 +110,7 @@ function ValidateInput({ id }: { id: number }) {
         isInvalid={(formState.errors.sectionName && true) || false}
       />
       <Button onClick={handleSubmit(submit)}>
-        {isPending ? "loading" : "submit"}
+        {newSection.isPending ? "loading" : "submit"}
       </Button>
       <Button>add new section</Button>
     </div>
