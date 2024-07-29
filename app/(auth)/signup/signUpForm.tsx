@@ -16,12 +16,14 @@ const fields: {
   /** We can ue zod to validate that our value is of type email */
   { name: "email", placeholder: "Enter email", type: "email" },
   { name: "password", placeholder: "Enter password", type: "password" },
+  { name: "role", placeholder: "Enter your role" },
 ];
 
 const signUpSchema = z.object({
   username: z.string().min(5, "Username must be at least 5 characters"),
   email: z.string().email("Invalid email"),
   password: z.string().min(8, "Password must be at least 8 characters"),
+  role: z.string(),
 });
 
 type SignUpSchema = z.infer<typeof signUpSchema>;

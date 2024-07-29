@@ -23,7 +23,7 @@ export async function signIn(formData: FormData) {
   const existingUser = await db.query.userTable.findFirst({
     where: eq(userTable.username, username),
   });
-
+  console.log(existingUser);
   if (!existingUser) {
     // NOTE:
     // Returning immediately allows malicious actors to figure out valid usernames from response times,
@@ -42,6 +42,7 @@ export async function signIn(formData: FormData) {
     existingUser.password,
     password,
   );
+  console.log(validPassword)
 
   if (!validPassword) {
     return {

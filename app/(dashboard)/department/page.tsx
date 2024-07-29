@@ -2,24 +2,32 @@
 import NewDepartment from "./new-departments";
 import { Departments } from "./card";
 import { api } from "@/app/lib/trpc/client";
+import { Authorization } from "./authorization";
 
 export const dynamic = "force-dynamic";
 
 export default function Departemnt() {
-  const departments = api.departmentRouter.newDepartment.useQuery();
-  // console.log(departments.data);
+  const departments = api.departmentRouter.getTeacher.useQuery();
+  const user = api.userRouter.getUser.useQuery();
+  // if (user.isLoading) return <div>hello</div>;
   return (
     <div className="grid grid-cols-3 gap-4">
-      {departments.data?.map((department) => (
-        <Departments
-          key={department.id}
-          id={department.id}
-          // duration={department.departmentDuration}
-          department={department.department}
-          section={department.section}
-        ></Departments>
-      ))}
-      <NewDepartment />
+      <Authorization
+        allowedRoles={["admin"]}
+        user={user?.data!}
+        forbiddenFallback={<div>this is an authorized</div>}
+      >
+        {departments.data?.map(({ department, section }) => (
+          <Departments
+            key={department.id}
+            id={department.id}
+            // duration={department.departmentDuration}
+            department={department.name}
+            section={section}
+          ></Departments>
+        ))}
+        <NewDepartment />
+      </Authorization>
     </div>
   );
 }

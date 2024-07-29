@@ -1,44 +1,26 @@
-import { z } from "zod";
-import { authedProcedure, publicProcedure, router } from "./trpc";
-import { classRouter } from "./router/class-router";
-import { departmentRouter } from "./router/departemnt-router";
-import { sectionRouter } from "./router/section-router";
-import { teacherRouter } from "./router/teacher-router";
-import { subjectRouter } from "./router/subject-router";
+import { router } from "./trpc";
+import { classRouter } from "./router/class.router";
+import { departmentRouter } from "./router/departemnt.router";
+import { sectionRouter } from "./router/section.router";
+import { teacherRouter } from "./router/teacher.router";
+import { subjectRouter } from "./router/subject.router";
+import { userRouter } from "./router/user.router";
+import { studentRouter } from "./router/student.router";
+import { gradeRouter } from "./router/grade.router";
+import { attendanceRouter } from "./router/attendance.router";
+import { sceduleRouter } from "./router/scedule.router";
 
 export const appRouter = router({
-  hello: authedProcedure
-    .input(
-      z.object({
-        text: z.string(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      const { db } = ctx;
-      const test = await db.query.department.findFirst();
-      // console.log(test);
-      return {
-        greeting: `hello ${test?.department}`,
-      };
-    }),
-  setDone: authedProcedure
-    .input(
-      z.object({
-        id: z.number(),
-        done: z.number(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { db } = ctx;
-      // console.log(db);
-      console.log("hello world");
-      return "test";
-    }),
-  classRouter: classRouter,
-  departmentRouter: departmentRouter,
-  sectionRouter: sectionRouter,
-  teacherRouter: teacherRouter,
-  subjectRouter: subjectRouter,
+  userRouter,
+  classRouter,
+  departmentRouter,
+  sectionRouter,
+  teacherRouter,
+  subjectRouter,
+  studentRouter,
+  gradeRouter,
+  attendanceRouter,
+  sceduleRouter,
 });
 
 // export type definition of API

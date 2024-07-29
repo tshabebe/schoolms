@@ -28,6 +28,7 @@ export function Departments({
   id: string;
   section: z.infer<typeof SelectSectionSchema>[];
 }) {
+  console.log(section);
   const router = useRouter();
   return (
     <div>
@@ -37,7 +38,7 @@ export function Departments({
           <AddSection id={id} />
         </CardHeader>
         <CardBody>
-          <div>{section.length} sections</div>
+          <div>{section && section.length} sections</div>
           <Button onClick={() => router.push(`department/${id}/section/`)}>
             view
           </Button>
@@ -87,9 +88,9 @@ function ValidateInput({ id }: { id: string }) {
   });
 
   const queryClient = useQueryClient();
-  const departmentsKey = getQueryKey(api.departmentRouter.newDepartment);
+  const departmentsKey = getQueryKey(api.departmentRouter.createDepartment);
 
-  const newSection = api.sectionRouter.newSection.useMutation({
+  const newSection = api.sectionRouter.createSection.useMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: departmentsKey });
     },
@@ -104,10 +105,10 @@ function ValidateInput({ id }: { id: string }) {
       <Input
         autoFocus
         label="Section"
-        {...register("sectionName")}
+        {...register("name")}
         placeholder="Enter section"
-        errorMessage={formState.errors.sectionName?.message}
-        isInvalid={(formState.errors.sectionName && true) || false}
+        errorMessage={formState.errors.name?.message}
+        isInvalid={(formState.errors.name && true) || false}
       />
       <Button onClick={handleSubmit(submit)}>
         {newSection.isPending ? "loading" : "submit"}

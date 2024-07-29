@@ -2,18 +2,18 @@
 import { db } from "@/app/_db";
 import {
   InsertStudentSchema,
-  InsertTeachersSchema,
+  InsertTeacherSchema,
   student,
   teacher,
 } from "@/app/_db/schema";
 import { unstable_noStore as noStore } from "next/cache";
-export async function newStudent(studentName: string, sectionId: number) {
+export async function newStudent(name: string, sectionId: string) {
   noStore();
   try {
-    const validatedData = InsertStudentSchema.parse({ studentName, sectionId });
+    const validatedData = InsertStudentSchema.parse({ name, sectionId });
     await db
       .insert(student)
-      .values({ studentName: validatedData.studentName })
+      .values({ name: validatedData.name })
       .returning({ id: student.id });
     console.log("testing");
   } catch (err) {
@@ -22,16 +22,16 @@ export async function newStudent(studentName: string, sectionId: number) {
   // console.log("test");
 }
 
-export async function newTeacher(teacherName: string, sectionId: number) {
+export async function newTeacher(name: string, sectionId: number) {
   noStore();
   try {
     const validatedData = InsertTeachersSchema.parse({
-      teacherName,
+      name,
       sectionId,
     });
     await db
       .insert(teacher)
-      .values({ teacherName: validatedData.teacherName })
+      .values({ name: validatedData.name })
       .returning({ id: teacher.id });
   } catch (err) {
     console.log(err);

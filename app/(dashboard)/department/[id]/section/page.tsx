@@ -1,36 +1,44 @@
-import { db } from "@/app/_db";
-import { section } from "@/app/_db/schema";
-import { eq } from "drizzle-orm";
+"use client";
 import { Card, CardFooter, CardHeader } from "@nextui-org/card";
 import { AddSubjects, AddTeachers } from "./modal";
 import { AddStudents } from "./modal";
 import { formatDistanceStrict } from "date-fns";
-export default async function Section({ params }: { params: { id: string } }) {
-  const sections = await db.query.section.findMany({
-    with: {
-      department: true,
-      students: true,
-      teachers: true,
-    },
-    where: eq(section.departmentId, params.id),
-  });
+import { api } from "@/app/lib/trpc/client";
+import { Authorization, POLICIES } from "../../authorization";
+import { Button } from "@nextui-org/button";
+import { usePathname, useRouter } from "next/navigation";
 
-  // const result = setDate(new Date(2014, 8, 1), 30)
+export default function Section({ params }: { params: { id: string } }) {
+  const sections = api.sectionRouter.getTeacher.useQuery({
+    departmentId: params.id,
+  });
+  const user = api.userRouter.getUser.useQuery();
+  const router = useRouter();
+  const test = usePathname();
   return (
-    <div className="grid grid-cols-3 gap-4">
-      {sections.map((section) => (
+    <div className="grid grid-cols-2 gap-4">
+      {sections.data?.map(({ section, department }) => (
         <Card key={section.id}>
           <CardHeader className="justify-between">
-            <div>sectionName: {section.sectionName}</div>
+            <div>sectionName: {section.name}</div>
             <div>
               sectionDuration:{" "}
-              {formatDistanceStrict(new Date(), section.sectionDuration)}
+              {formatDistanceStrict(new Date(), section.duration)}
             </div>
           </CardHeader>
           <CardFooter className="gap-2">
-            <AddTeachers id={section.id} />
-            <AddStudents id={section.id} />
-            <AddSubjects id={section.id} />
+            <Authorization
+              policyCheck={POLICIES["add:teacher"](user.data!, department!)}
+            >
+              <AddTeachers id={section.id} />
+              <AddStudents id={section.id} />
+              <AddSubjects id={section.id} />
+            </Authorization>
+            <Button
+              onClick={() => router.push(`${test}/${section.id}/attendances`)}
+            >
+              get attendance for today
+            </Button>
           </CardFooter>
         </Card>
       ))}

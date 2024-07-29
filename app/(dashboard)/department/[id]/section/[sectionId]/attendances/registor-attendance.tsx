@@ -1,12 +1,15 @@
 "use client";
-import { InsertSubjectSchema } from "@/app/_db/schema";
+import { InsertAttendanceRecordSchema } from "@/app/_db/schema";
 import { api } from "@/app/lib/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-const newSubjectSchema = InsertSubjectSchema.omit({ sectionId: true });
+const newSubjectSchema = InsertAttendanceRecordSchema.omit({
+  sectionId: true,
+  sceduleId: true,
+});
 export function ValidateInput({ sectionId }: { sectionId: string }) {
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof newSubjectSchema>
@@ -16,9 +19,9 @@ export function ValidateInput({ sectionId }: { sectionId: string }) {
 
   const utils = api.useUtils();
 
-  const newSection = api.subjectRouter.createSubject.useMutation({
+  const newSection = api.attendanceRouter.addAttendance.useMutation({
     onSuccess: async () => {
-      await utils.teacherRouter.getTeacher.invalidate();
+      await utils.sectionRouter.getTeacher.invalidate();
     },
   });
 
@@ -30,11 +33,19 @@ export function ValidateInput({ sectionId }: { sectionId: string }) {
     <div className="flex">
       <Input
         autoFocus
-        label="Section"
-        {...register("name")}
-        placeholder="Enter section"
-        errorMessage={formState.errors.name?.message}
-        isInvalid={(formState.errors.name && true) || false}
+        label="teacherId"
+        {...register("teacherId")}
+        placeholder="Enter your teacherId"
+        errorMessage={formState.errors.teacherId?.message}
+        isInvalid={(formState.errors.teacherId && true) || false}
+      />
+      <Input
+        autoFocus
+        label="Attendance password"
+        {...register("password")}
+        placeholder="Enter your attendance password"
+        errorMessage={formState.errors.password?.message}
+        isInvalid={(formState.errors.password && true) || false}
       />
       <Button onClick={handleSubmit(submit)}>
         {newSection.isPending ? "loading" : "submit"}

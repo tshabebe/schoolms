@@ -12,7 +12,7 @@ export default function Student({ params }: { params: { sectionId: string } }) {
       hello from teachers
       {subjects.data &&
         subjects.data!.map((subject) => (
-          <div key={subject.id}>{subject.subjectsName}</div>
+          <div key={subject.id}>{subject.name}</div>
         ))}
       <ValidateInput sectionId={params.sectionId} />
     </div>

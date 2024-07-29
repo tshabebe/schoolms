@@ -4,7 +4,7 @@ import { api } from "@/app/lib/trpc/client";
 import { usePersonStore } from "../store";
 
 export default function Section() {
-  const hello = api.hello.useQuery({ text: "hello from tRPC" });
+  // const hello = api.hello.useQuery({ text: "hello from tRPC" });
   const department = api.classRouter.newClass.useMutation();
   // const helloform = await serverClient.hello({ text: "from tRPC" });
   // if (hello.isLoading) {

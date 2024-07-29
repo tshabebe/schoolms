@@ -1,12 +1,12 @@
 "use client";
-import { InsertSubjectSchema } from "@/app/_db/schema";
+import { InsertStudentSchema } from "@/app/_db/schema";
 import { api } from "@/app/lib/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@nextui-org/button";
 import { Input } from "@nextui-org/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-const newSubjectSchema = InsertSubjectSchema.omit({ sectionId: true });
+const newSubjectSchema = InsertStudentSchema.omit({ sectionId: true });
 export function ValidateInput({ sectionId }: { sectionId: string }) {
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof newSubjectSchema>
@@ -16,7 +16,7 @@ export function ValidateInput({ sectionId }: { sectionId: string }) {
 
   const utils = api.useUtils();
 
-  const newSection = api.subjectRouter.createSubject.useMutation({
+  const newSection = api.studentRouter.newStudent.useMutation({
     onSuccess: async () => {
       await utils.teacherRouter.getTeacher.invalidate();
     },
@@ -30,11 +30,19 @@ export function ValidateInput({ sectionId }: { sectionId: string }) {
     <div className="flex">
       <Input
         autoFocus
-        label="Section"
-        {...register("name")}
-        placeholder="Enter section"
-        errorMessage={formState.errors.name?.message}
-        isInvalid={(formState.errors.name && true) || false}
+        label="Student"
+        {...register("studentName")}
+        placeholder="Enter new student"
+        errorMessage={formState.errors.studentName?.message}
+        isInvalid={(formState.errors.studentName && true) || false}
+      />
+      <Input
+        autoFocus
+        label="Student userId"
+        {...register("userId")}
+        placeholder="put userId if it has an account"
+        errorMessage={formState.errors.studentName?.message}
+        isInvalid={(formState.errors.studentName && true) || false}
       />
       <Button onClick={handleSubmit(submit)}>
         {newSection.isPending ? "loading" : "submit"}

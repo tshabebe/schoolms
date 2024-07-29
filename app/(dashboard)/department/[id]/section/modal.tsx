@@ -15,12 +15,11 @@ import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { newStudent } from "./action";
-import { InsertStudentSchema, InsertTeachersSchema } from "@/app/_db/schema";
+import { InsertStudentSchema, InsertTeacherSchema } from "@/app/_db/schema";
 import { usePathname, useRouter } from "next/navigation";
 import { api } from "@/app/lib/trpc/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { getQueryKey } from "@trpc/react-query";
-import { InsertSubjectsSchema } from "@/app/_db/schema/subjects";
+import { InsertSubjectSchema } from "@/app/_db/schema";
 
 export function AddStudents({ id }: { id: string }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -134,7 +133,7 @@ export function AddSubjects({ id }: { id: string }) {
   );
 }
 
-const newSubjectSchema = InsertSubjectsSchema.omit({ sectionId: true });
+const newSubjectSchema = InsertSubjectSchema.omit({ sectionId: true });
 function ValidateSubjectInput({ id }: { id: string }) {
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof newSubjectSchema>
@@ -144,7 +143,7 @@ function ValidateSubjectInput({ id }: { id: string }) {
 
   const queryClient = useQueryClient();
 
-  const newSubjects = api.subjectRouter.newSubject.useMutation({
+  const newSubjects = api.subjectRouter.createSubject.useMutation({
     onSuccess() {
       // TODO: invalidate were the teachers are listed
       // queryClient.invalidateQueries({queryKey: getQueryKey(api.departmentRouter.newDepartment)})
@@ -160,10 +159,10 @@ function ValidateSubjectInput({ id }: { id: string }) {
       <Input
         autoFocus
         label="Section"
-        {...register("subjectsName")}
+        {...register("name")}
         placeholder="TeacherName"
-        errorMessage={formState.errors.subjectsName?.message}
-        isInvalid={(formState.errors.subjectsName && true) || false}
+        errorMessage={formState.errors.name?.message}
+        isInvalid={(formState.errors.name && true) || false}
       />
       <Button onClick={handleSubmit(submit)}>
         {newSubjects.isPending ? "loading" : "submit"}
@@ -173,7 +172,7 @@ function ValidateSubjectInput({ id }: { id: string }) {
   );
 }
 
-const newTeacherSchema = InsertTeachersSchema.omit({ sectionId: true });
+const newTeacherSchema = InsertTeacherSchema.omit({ sectionId: true });
 function ValidateTeacherInput({ id }: { id: string }) {
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof newTeacherSchema>
@@ -183,7 +182,7 @@ function ValidateTeacherInput({ id }: { id: string }) {
 
   const queryClient = useQueryClient();
 
-  const newTeacher = api.teacherRouter.newTeacher.useMutation({
+  const newTeacher = api.sectionRouter.addStudent.useMutation({
     onSuccess() {
       // TODO: invalidate were the teachers are listed
       // queryClient.invalidateQueries({queryKey: getQueryKey(api.departmentRouter.newDepartment)})
@@ -191,7 +190,7 @@ function ValidateTeacherInput({ id }: { id: string }) {
   });
 
   function submit(datap: z.infer<typeof newTeacherSchema>) {
-    newTeacher.mutate({ ...datap, sectionId: id });
+    newTeacher.mutate({ ...datap, sectionId: id, name: "test" });
   }
 
   return (
@@ -214,7 +213,7 @@ function ValidateTeacherInput({ id }: { id: string }) {
 
 const newStudentSchema = InsertStudentSchema.omit({ sectionId: true });
 
-function ValidateStudentInput({ id }: { id: number }) {
+function ValidateStudentInput({ id }: { id: string }) {
   const { register, handleSubmit, formState } = useForm<
     z.infer<typeof newStudentSchema>
   >({
@@ -225,7 +224,7 @@ function ValidateStudentInput({ id }: { id: number }) {
 
   function submit(datap: z.infer<typeof newStudentSchema>) {
     setTransition(async () => {
-      await newStudent(datap.studentName, id);
+      await newStudent(datap.name, id);
     });
   }
 
@@ -234,10 +233,10 @@ function ValidateStudentInput({ id }: { id: number }) {
       <Input
         autoFocus
         label="Section"
-        {...register("studentName")}
+        {...register("name")}
         placeholder="StudentName"
-        errorMessage={formState.errors.studentName?.message}
-        isInvalid={(formState.errors.studentName && true) || false}
+        errorMessage={formState.errors.name?.message}
+        isInvalid={(formState.errors.name && true) || false}
       />
       <Button onClick={handleSubmit(submit)}>
         {isPending ? "loading" : "submit"}

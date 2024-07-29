@@ -27,10 +27,10 @@ export default function Dashboard() {
     <div>
       <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-4">
         <Input
-          {...register("department")}
+          {...register("name")}
           placeholder="department"
-          errorMessage={formState.errors.department?.message}
-          isInvalid={(formState.errors.department && true) || false}
+          errorMessage={formState.errors.name?.message}
+          isInvalid={(formState.errors.name && true) || false}
         />
         <button type="submit">{loading ? "loading" : "submit"}</button>
       </form>

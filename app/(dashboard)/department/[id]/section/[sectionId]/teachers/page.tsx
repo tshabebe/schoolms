@@ -1,6 +1,7 @@
 "use client";
 import { api } from "@/app/lib/trpc/client";
 import { ValidateInput } from "./newTeacher";
+import { usePathname, useRouter } from "next/navigation";
 export default function Student({ params }: { params: { sectionId: string } }) {
   const teachers = api.teacherRouter.getTeacher.useQuery({
     sectionId: params.sectionId,
@@ -8,15 +9,21 @@ export default function Student({ params }: { params: { sectionId: string } }) {
   const subjects = api.subjectRouter.getSubject.useQuery({
     sectionId: params.sectionId,
   });
-  // TODO: if there is an error and then we should say something like
-  // hey there is an error here pls check that out
+  // const section = api.sectionRouter.getSection.useQuery();
+  const router = useRouter();
+  const test = usePathname();
   return (
     <div>
       <div className="flex">
         <div>
           {teachers.data &&
             teachers.data!.map((teacher) => (
-              <div key={teacher.id}>{teacher.teacherName}</div>
+              <div key={teacher.id}>
+                <div>{teacher.teacherName} </div>{" "}
+                <button onClick={() => router.push(`${test}/${teacher.id}`)}>
+                  manage scedule
+                </button>
+              </div>
             ))}
         </div>
         <div>
@@ -27,6 +34,10 @@ export default function Student({ params }: { params: { sectionId: string } }) {
         </div>
       </div>
       <ValidateInput sectionId={params.sectionId} />
+      <div>
+        <button onClick={undefined}>go teacherId</button>
+        {/* <App></App> */}
+      </div>
     </div>
   );
 }

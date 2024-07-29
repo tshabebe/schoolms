@@ -15,7 +15,7 @@ export async function classAction(
     const validatedData = InsertDepartmentSchema.parse(data);
     await db
       .insert(department)
-      .values({ department: validatedData.department })
+      .values({ name: validatedData.name })
       .returning({ id: department.id });
   } catch (err) {
     return console.log(getErrorMessage(err));
