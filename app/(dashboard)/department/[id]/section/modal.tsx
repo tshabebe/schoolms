@@ -198,10 +198,10 @@ function ValidateTeacherInput({ id }: { id: string }) {
       <Input
         autoFocus
         label="Section"
-        {...register("teacherName")}
+        {...register("name")}
         placeholder="TeacherName"
-        errorMessage={formState.errors.teacherName?.message}
-        isInvalid={(formState.errors.teacherName && true) || false}
+        errorMessage={formState.errors.name?.message}
+        isInvalid={(formState.errors.name && true) || false}
       />
       <Button onClick={handleSubmit(submit)}>
         {newTeacher.isPending ? "loading" : "submit"}

@@ -13,7 +13,7 @@ export default function StudentAttendance({
 }: {
   params: { studentId: string; sectionId: string };
 }) {
-  const grades = api.gradeRouter.getGrade.useQuery({
+  const grades = api.gradeRouter.getStudentsGrade.useQuery({
     studentId: params.studentId,
     sectionId: params.sectionId,
     subjectId: "FE0kEwyAhNQz",
@@ -49,9 +49,9 @@ export function ValidateInput({
 
   const utils = api.useUtils();
 
-  const newSection = api.gradeRouter.newGrade.useMutation({
+  const newSection = api.gradeRouter.addStudentsGrade.useMutation({
     onSuccess: async () => {
-      await utils.gradeRouter.getGrade.invalidate();
+      await utils.gradeRouter.getStudentsGrade.invalidate();
     },
   });
 

@@ -1,13 +1,14 @@
-import { eq, or, sql } from "drizzle-orm";
+import { and, eq, or, count } from "drizzle-orm";
 import { authedProcedure, router } from "../trpc";
 import {
   InsertDepartmentSchema,
-  SelectSectionSchema,
   department,
+  scedule,
+  sceduleDay,
   section,
   teacher,
 } from "@/app/_db/schema";
-import { z } from "zod";
+import { format } from "date-fns";
 
 export const departmentRouter = router({
   createDepartment: authedProcedure
@@ -26,30 +27,20 @@ export const departmentRouter = router({
 
       return TeacherDepartment;
     }),
-  getTeacher: authedProcedure.query(async (opts) => {
+  getDepartments: authedProcedure.query(async (opts) => {
     const { db, user } = opts.ctx;
 
-    type Section = z.infer<typeof SelectSectionSchema>;
     const userDepartments = await db
       .selectDistinctOn([department.id], {
         department,
-        section: sql<Section[]>`
-      COALESCE(
-        (
-          SELECT json_agg(DISTINCT sub_section)
-          FROM (
-            SELECT ${section}
-            FROM ${section}
-            WHERE ${section.departmentId} = ${department.id}
-          ) AS sub_section
-        ),
-        '[]'::json
-      )`,
+        section: count(section.id),
       })
       .from(department)
       .leftJoin(section, eq(section.departmentId, department.id))
       .leftJoin(teacher, eq(teacher.sectionId, section.id))
-      .where(or(eq(teacher.userId, user.id), eq(department.userId, user.id)));
+      .where(or(eq(teacher.userId, user.id), eq(department.userId, user.id)))
+      .groupBy(department.id);
+
     return userDepartments;
   }),
 });

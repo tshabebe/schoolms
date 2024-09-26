@@ -7,7 +7,7 @@ import { Authorization } from "./authorization";
 export const dynamic = "force-dynamic";
 
 export default function Departemnt() {
-  const departments = api.departmentRouter.getTeacher.useQuery();
+  const departments = api.departmentRouter.getDepartments.useQuery();
   const user = api.userRouter.getUser.useQuery();
   // if (user.isLoading) return <div>hello</div>;
   return (

@@ -21,8 +21,8 @@ export async function classAction(
     const test = await db
       .insert(department)
       .values({
-        name: validatedData.name,
-        duration: validatedData.duration,
+        department: validatedData.department,
+        departmentDuration: validatedData.departmentDuration,
       })
       .returning({ id: department.id });
     // return test[0].id;

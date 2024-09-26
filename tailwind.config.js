@@ -19,7 +19,7 @@ module.exports = {
   darkMode: "class",
   plugins: [
     nextui({
-      prefix: "noodle",
+      prefix: "schoolms",
       layout: {
         radius: {
           small: "4px",
@@ -43,10 +43,16 @@ module.exports = {
           colors: {
             background: "#0c0a09",
             foreground: "#d2d2ca",
-            primary,
+            primary: secondaryDark,
             secondary: secondaryDark,
             divider: "#363130",
             content1: "#110f0d",
+            // default: secondaryDark,
+            // focus: secondaryDark,
+            // overlay: secondaryDark,
+            // danger: secondaryDark,
+            // success: secondaryDark,
+            // warning: secondaryDark,
           },
         },
       },

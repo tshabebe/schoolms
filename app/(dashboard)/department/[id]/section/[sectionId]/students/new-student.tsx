@@ -16,7 +16,7 @@ export function ValidateInput({ sectionId }: { sectionId: string }) {
 
   const utils = api.useUtils();
 
-  const newSection = api.studentRouter.newStudent.useMutation({
+  const newSection = api.studentRouter.createStudent.useMutation({
     onSuccess: async () => {
       await utils.teacherRouter.getTeacher.invalidate();
     },
@@ -31,18 +31,18 @@ export function ValidateInput({ sectionId }: { sectionId: string }) {
       <Input
         autoFocus
         label="Student"
-        {...register("studentName")}
+        {...register("name")}
         placeholder="Enter new student"
-        errorMessage={formState.errors.studentName?.message}
-        isInvalid={(formState.errors.studentName && true) || false}
+        errorMessage={formState.errors.name?.message}
+        isInvalid={(formState.errors.name && true) || false}
       />
       <Input
         autoFocus
         label="Student userId"
         {...register("userId")}
         placeholder="put userId if it has an account"
-        errorMessage={formState.errors.studentName?.message}
-        isInvalid={(formState.errors.studentName && true) || false}
+        errorMessage={formState.errors.name?.message}
+        isInvalid={(formState.errors.name && true) || false}
       />
       <Button onClick={handleSubmit(submit)}>
         {newSection.isPending ? "loading" : "submit"}

@@ -26,9 +26,8 @@ export function Departments({
 }: {
   department: string;
   id: string;
-  section: z.infer<typeof SelectSectionSchema>[];
+  section: number;
 }) {
-  console.log(section);
   const router = useRouter();
   return (
     <div>
@@ -38,7 +37,7 @@ export function Departments({
           <AddSection id={id} />
         </CardHeader>
         <CardBody>
-          <div>{section && section.length} sections</div>
+          <div>{section} sections</div>
           <Button onClick={() => router.push(`department/${id}/section/`)}>
             view
           </Button>

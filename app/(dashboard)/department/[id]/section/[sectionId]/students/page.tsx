@@ -3,7 +3,7 @@ import { api } from "@/app/lib/trpc/client";
 import { ValidateInput } from "./new-student";
 import { usePathname, useRouter } from "next/navigation";
 export default function Student({ params }: { params: { sectionId: string } }) {
-  const student = api.studentRouter.getStudent.useQuery({
+  const student = api.studentRouter.getSectionStudents.useQuery({
     sectionId: params.sectionId,
   });
   // TODO: if there is an error and then we should say something like
@@ -19,7 +19,7 @@ export default function Student({ params }: { params: { sectionId: string } }) {
       {student.data &&
         student.data!.map((students) => (
           <div key={students.id}>
-            <div>{students.studentName}</div>
+            <div>{students.name}</div>
             <div>assign grade</div>
             <div>assign attendance</div>
             <button onClick={() => router.push(`${test}/${students.id}`)}>

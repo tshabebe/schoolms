@@ -11,7 +11,7 @@ export const teacher = pgTable(
     id: varchar("id", { length: 30 })
       .$defaultFn(() => generateId())
       .primaryKey(), // prefix_ + nanoid (12)
-    teacherName: varchar("teacher_name", { length: 256 }).notNull(),
+    name: varchar("teacher_name", { length: 256 }).notNull(),
     sectionId: varchar("section_id")
       .references(() => section.id)
       .notNull(),

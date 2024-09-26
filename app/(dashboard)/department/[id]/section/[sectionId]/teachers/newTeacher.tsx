@@ -41,18 +41,18 @@ export function ValidateInput({ sectionId }: { sectionId: string }) {
       <Input
         autoFocus
         label="teacher"
-        {...register("teacherName")}
+        {...register("name")}
         placeholder="Enter teacher"
-        errorMessage={formState.errors.teacherName?.message}
-        isInvalid={(formState.errors.teacherName && true) || false}
+        errorMessage={formState.errors.name?.message}
+        isInvalid={(formState.errors.name && true) || false}
       />
       <Input
         autoFocus
         label="subjects"
         {...register("subjectId")}
         placeholder="Enter Subjects"
-        errorMessage={formState.errors.teacherName?.message}
-        isInvalid={(formState.errors.teacherName && true) || false}
+        errorMessage={formState.errors.name?.message}
+        isInvalid={(formState.errors.name && true) || false}
       />
       {/* used for adding teacher from other section*/}
       <Input

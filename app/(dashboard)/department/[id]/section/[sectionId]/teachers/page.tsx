@@ -19,7 +19,7 @@ export default function Student({ params }: { params: { sectionId: string } }) {
           {teachers.data &&
             teachers.data!.map((teacher) => (
               <div key={teacher.id}>
-                <div>{teacher.teacherName} </div>{" "}
+                <div>{teacher.name} </div>{" "}
                 <button onClick={() => router.push(`${test}/${teacher.id}`)}>
                   manage scedule
                 </button>

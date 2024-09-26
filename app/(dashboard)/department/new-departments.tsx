@@ -4,29 +4,27 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api } from "@/app/lib/trpc/client";
-import { match } from "ts-pattern";
+import { useQueryClient } from "@tanstack/react-query";
+import { getQueryKey } from "@trpc/react-query";
 import { zfd } from "zod-form-data";
-
-const ZCreateDepartment = InsertDepartmentSchema.extend({
+const ZInsertDepartmentSchema = InsertDepartmentSchema.extend({
   duration: zfd.numeric(z.number()),
 });
-type TCreateDepartment = z.infer<typeof ZCreateDepartment>;
+type DepartmentType = z.infer<typeof ZInsertDepartmentSchema>;
 
 export default function App() {
-  const utils = api.useUtils();
-  const newDepartment = api.departmentRouter.createDepartment.useMutation({
-    onSuccess: async () => {
-      await utils.departmentRouter.getTeacher.invalidate();
+  const queryClient = useQueryClient();
+  const departmentsKey = getQueryKey(api.departmentRouter.createDepartment);
+  const newDepartment = api.classRouter.newClass.useMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: departmentsKey });
     },
   });
-  const Test = match(newDepartment)
-    .with({ isPending: true }, () => <div>hello world</div>)
-    .otherwise(() => <div>things are not nice</div>);
-  const { register, handleSubmit, formState } = useForm<TCreateDepartment>({
-    resolver: zodResolver(ZCreateDepartment),
+  const { register, handleSubmit, formState } = useForm<DepartmentType>({
+    resolver: zodResolver(ZInsertDepartmentSchema),
   });
 
-  function submit(datap: TCreateDepartment) {
+  function submit(datap: DepartmentType) {
     newDepartment.mutate(datap);
   }
 
@@ -35,23 +33,16 @@ export default function App() {
       <div className="flex flex-col gap-4">
         <Input
           {...register("name")}
-          placeholder="department name"
+          placeholder="department"
           errorMessage={formState.errors.name?.message}
           isInvalid={(formState.errors.name && true) || false}
         />
         <Input
           {...register("duration")}
-          placeholder="department duration"
+          placeholder="department"
           errorMessage={formState.errors.duration?.message}
           isInvalid={(formState.errors.duration && true) || false}
         />
-        <Input
-          {...register("userId")}
-          placeholder="user Id to be invited"
-          errorMessage={formState.errors.userId?.message}
-          isInvalid={(formState.errors.userId && true) || false}
-        />
-        {/* <Test /> */}
         <button onClick={handleSubmit(submit)} type="submit">
           {newDepartment.isPending ? "loading" : "submit"}
         </button>
